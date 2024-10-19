@@ -9,12 +9,11 @@
 
     <h1>Detalle de Canción</h1>
     <p>Título: ${cancion.titulo}</p>
-    <p>Artista: ${cancion.artista}</p>
+    <p>Artista: ${artista.nombre}</p>
     <p>Álbum: ${cancion.album}</p>
     <p>Género: ${cancion.genero}</p>
     <p>Idioma: ${cancion.idioma}</p>
-    <p>Fecha de Creación: ${cancion.fechaCreacion}</p>
-    <p>Fecha de Actualización: ${cancion.fechaActualizacion}</p>
+
     
 <form action="/canciones/eliminar/${cancion.id}" method="POST">
  <input type="hidden" name="_method" value="DELETE"/>

@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -32,8 +34,6 @@ public class Cancion {
 	private String album;
 	
 	
-	@Size(min=3, message="Por favor proporciona el artista.")
-	private String artista;
 	
 	
 	@Size(min=3, message="Por favor proporciona el genero.")
@@ -41,6 +41,22 @@ public class Cancion {
 	@Size(min=3, message="Por favor proporciona tu idioma.")
 	private String idioma;
 	
+	@ManyToOne
+	
+	@JoinColumn(name="id_artista")
+	private Artista artista;
+	
+	
+	
+	public Artista getArtista() {
+		return artista;
+	}
+
+
+	public void setArtista(Artista artista) {
+		this.artista = artista;
+	}
+
 	@Temporal(TemporalType.DATE)
 	@Column(name="fecha_creacion")
 	private Date fechaCreacion;
@@ -51,14 +67,7 @@ public class Cancion {
 
 	public Cancion() {}
 	
-	public String getArtista() {
-		return artista;
-	}
-
-	public void setArtista(String artista) {
-		this.artista = artista;
-	}
-
+	
 	public Long getId() {
 		return id;
 	}
@@ -125,4 +134,14 @@ public class Cancion {
 	protected void onUpdate() {
 		this.fechaActualizacion = new Date();//esto es para que cuando se actualiza un contenido automaticamente crea la fecha
 	}// estos ultimos cumplen la funcion del now() y el now() on update now()
+	
+	
+	public Long getArtistaId() {
+        return artista != null ? artista.getId() : null;
+    }
+
+
 }
+
+
+

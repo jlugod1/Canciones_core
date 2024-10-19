@@ -23,9 +23,11 @@
             </div>
 
             <div>
-                <form:label path="artista">Artista</form:label>
-                <form:input type="text" path="artista" />
-                <form:errors path="artista" cssClass="text-danger" />
+                <form:label path="artistaId">Seleccionar Artista</form:label> <!-- Cambiar for a path -->
+                <form:select path="artistaId" class="form-select">
+                    <form:options items="${artistas}" itemValue="id" itemLabel="nombre" />
+                </form:select>
+                <form:errors path="artistaId" cssClass="text-danger" />
             </div>
 
             <div>

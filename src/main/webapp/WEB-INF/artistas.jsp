@@ -5,31 +5,27 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>lista de canciones</title>
+<title>Lista de artistas</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
 <div class="container">
     <div class="row">
-        <h1>canciones</h1>
+        <h1>artistas disponibles</h1>
     </div>
     <div class="row">
         <ul class="list-group">
-            <c:forEach items="${canciones}" var="cancion">
+            <c:forEach items="${artistas}" var="artista">
                 <li class="list-group-item">
-                   <a href="/canciones/detalle/${cancion.id}">${cancion.titulo}</a> 
-                    <a href="/canciones/formulario/editar/${cancion.id}">editar</a>
-                   
+                      <a href="/artistas/detalle/${artista.id}">${artista.nombre}</a> 
                 </li>
             </c:forEach>
         </ul>
         
-        <a href="/canciones/formulario/agregar" class="btn btn-primary">nueva cancion</a>
+        <a href="/artistas/formulario/agregar" class="btn btn-primary">Agregar un Artista</a>
+        
+        <a href="/canciones" class="btn btn-primary mt-3">Volver a la lista de canciones</a>
     </div>
-    
-        <a class="btn btn-primary mt-3" href="/artistas">lista de artistas</a>
-    </div>
-    
 </div>
 </body>
 </html>
