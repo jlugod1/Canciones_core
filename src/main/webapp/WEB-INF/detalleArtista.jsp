@@ -13,8 +13,10 @@
         <p><strong>Apellido:</strong> ${artista.apellido}</p>
         <p><strong>Bibliografía:</strong> ${artista.bibliografia}</p>
 
-        
-
+       <form action="/artistas/eliminar/${artista.id}" method="POST">
+    <input type="hidden" name="_method" value="DELETE"/>
+    <button class="btn btn-danger mt-3">Eliminar</button>
+</form>
         <a class="btn btn-primary mt-3" href="/artistas">Volver a lista de artistas</a>
     </div>
     

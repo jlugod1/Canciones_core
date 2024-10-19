@@ -23,145 +23,140 @@ import jakarta.validation.Valid;
 
 @Controller
 public class ControladorCanciones {
-	 @Autowired
-	    private final ServicioCanciones servicioCanciones;
-	    
-	    @Autowired
-	    private final ServicioArtistas servicioArtistas; 
+    @Autowired
+    private final ServicioCanciones servicioCanciones;
+    
+    @Autowired
+    private final ServicioArtistas servicioArtistas; 
 
-	    
-	    public ControladorCanciones(ServicioCanciones servicioCanciones, ServicioArtistas servicioArtistas) {
-	        this.servicioCanciones = servicioCanciones;
-	        this.servicioArtistas = servicioArtistas;
-	    }
+    public ControladorCanciones(ServicioCanciones servicioCanciones, ServicioArtistas servicioArtistas) {
+        this.servicioCanciones = servicioCanciones;
+        this.servicioArtistas = servicioArtistas;
+    }
 
-  @GetMapping("/canciones")
+    // Mostrar Canciones
+    @GetMapping("/canciones")
+    public String desplegarCanciones(Model modelo) {
+        List<Cancion> canciones = this.servicioCanciones.obtenerTodasLasCanciones();
+        modelo.addAttribute("canciones", canciones);
+        return "canciones.jsp";
+    }
   
-  public String desplegarCanciones(Model modelo) {
-	  List<Cancion> canciones = this.servicioCanciones.obtenerTodasLasCanciones();
-	  modelo.addAttribute("canciones", canciones);
-	   
-	  return "canciones.jsp";
-	  
-	  
-  }
-  
-@GetMapping("/artistas")
-  
-  public String desplegarArtistas(Model modelo) {
-	  List<Artista> artistas = this.servicioArtistas.obtenerTodosLosArtistas();
-	  modelo.addAttribute("artistas", artistas);
-	   
-	  return "artistas.jsp";
-	  
-	  
-  }
+    // Mostrar Artistas
+    @GetMapping("/artistas")
+    public String desplegarArtistas(Model modelo) {
+        List<Artista> artistas = this.servicioArtistas.obtenerTodosLosArtistas();
+        modelo.addAttribute("artistas", artistas);
+        return "artistas.jsp";
+    }
 
+    // Detalles Canción
+    @GetMapping("/canciones/detalle/{idCancion}")
+    public String desplegarDetalleCancion(@PathVariable Long idCancion, Model model) {
+        Cancion cancion = this.servicioCanciones.obtenerCancionPorId(idCancion);
+        model.addAttribute("artista", cancion.getArtista());
+        model.addAttribute("cancion", cancion);
+        return "detalleCancion.jsp";
+    }
+  
+    // Detalles Artista
+    @GetMapping("/artistas/detalle/{idArtista}")
+    public String desplegarDetalleArtista(@PathVariable Long idArtista, Model model) {
+        Artista artista= this.servicioArtistas.obtenerArtistaPorId(idArtista);
+        model.addAttribute("artista", artista);
+        return "detalleArtista.jsp";
+    }
+  
+    // Agregar Artista
+    @GetMapping("/artistas/formulario/agregar")
+    public String formularioAgregarArtista(@ModelAttribute Artista artista) {
+        return "agregarArtista.jsp";
+    }
+  
+    // Procesar Agregar Artista
+    @PostMapping("/artistas/procesa/agregar")
+    public String procesarAgregarArtista(@Valid @ModelAttribute Artista artista, BindingResult validaciones) {
+        if (validaciones.hasErrors()) {
+            return "agregarArtista.jsp";
+        }
+        this.servicioArtistas.agregarArtista(artista);
+        return "redirect:/artistas";
+    }
+  
+    // Agregar Canción
+    @GetMapping("/canciones/formulario/agregar")
+    public String formularioAgregarCanciones(@ModelAttribute Cancion cancion, Model model) {
+        List<Artista> artistas = servicioArtistas.obtenerTodosLosArtistas();
+        model.addAttribute("artistas", artistas);
+        return "agregarCancion.jsp";
+    }
+  
+    // Procesar Agregar Canción
+    @PostMapping("/canciones/procesa/agregar")
+    public String procesarAgregarCancion(@Valid @ModelAttribute Cancion cancion,
+                                          BindingResult validaciones, 
+                                          @RequestParam("artistaId") Long artistaId,  
+                                          Model modelo) {
+        if (validaciones.hasErrors()) {
+            return "agregarCancion.jsp";
+        }
 
+        // Obtener el artista por ID y asociarlo a la canción
+        Artista artista = servicioArtistas.obtenerArtistaPorId(artistaId);
+        cancion.setArtista(artista); 
 
+        servicioCanciones.agregarCancion(cancion);
+        return "redirect:/canciones";
+    }
 
-  
-  @GetMapping("/canciones/detalle/{idCancion}")
-  public String desplegarDetalleCancion(@PathVariable Long idCancion, Model model) {
-      Cancion cancion = this.servicioCanciones.obtenerCancionPorId(idCancion);
-      model.addAttribute("artista", cancion.getArtista());
-      
-      model.addAttribute("cancion", cancion);
-      return "detalleCancion.jsp";
-  }
-  
-  @GetMapping("/artistas/detalle/{idArtista}")
-  public String desplegarDetalleArtista(@PathVariable Long idArtista, Model model) {
-      Artista artista= this.servicioArtistas.obtenerArtistaPorId(idArtista);
-      model.addAttribute("artista", artista);
-      return "detalleArtista.jsp";
-  }
-  
-  @GetMapping("/artistas/formulario/agregar")
-  public String formularioAgregarArtista(@ModelAttribute Artista artista ){
-  return "agregarArtista.jsp";
-  
-  
-  }
-  
-  @PostMapping("/artistas/procesa/agregar")
-  public  String procesarAgregarArtista(@Valid  @ModelAttribute Artista artista,
-		                                 BindingResult validaciones)   {
-	  
-	  if (validaciones.hasErrors()) {
-		  return "agregarArtista.jsp"; }
-	  this.servicioArtistas.agregarArtista(artista);
-	  return "redirect:/artistas";
-	  
-  }
-  
-  @GetMapping("/canciones/formulario/agregar")
-  public String formularioAgregarCanciones(@ModelAttribute Cancion cancion, Model model){
-	  List<Artista> artistas = servicioArtistas.obtenerTodosLosArtistas();
-	  model.addAttribute("artistas", artistas);
-	  return "agregarCancion.jsp";
-  
-  }
-  
-  @PostMapping("/canciones/procesa/agregar")
-  public String procesarAgregarCancion(@Valid @ModelAttribute Cancion cancion,
-                                       BindingResult validaciones, 
-                                       @RequestParam("artistaId") Long artistaId,  
-                                       Model modelo) {
-      if (validaciones.hasErrors()) {
-          return "agregarCancion.jsp";
-      }
+    // Editar Canción
+    @GetMapping("/canciones/formulario/editar/{idCancion}")
+    public String formularioEditarCancion(@PathVariable("idCancion") Long idCancion, Model modelo) {
+        Cancion cancionActual = this.servicioCanciones.obtenerCancionPorId(idCancion);  
+        modelo.addAttribute("cancion", cancionActual);
+        
+        List<Artista> artistas = servicioArtistas.obtenerTodosLosArtistas();
+        modelo.addAttribute("artistas", artistas); 
 
-      // Obtener el artista por ID y asociarlo a la canción
-      Artista artista = servicioArtistas.obtenerArtistaPorId(artistaId);
-      cancion.setArtista(artista);  // Estás usando el objeto Artista, no artistaId directamente
+        return "editarCancion.jsp";
+    }
 
-      
-      servicioCanciones.agregarCancion(cancion);
-      return "redirect:/canciones";
-  }
+    // Procesar Editar Canción
+    @PutMapping("/canciones/procesa/editar/{idCancion}")
+    public String procesarEditarCancion(@Valid @ModelAttribute("cancion") Cancion cancion,
+                                         BindingResult validaciones,
+                                         @PathVariable("idCancion") long idCancion,
+                                         @RequestParam("artistaId") Long artistaId) {
+        if (validaciones.hasErrors()) {
+            return "editarCancion.jsp"; 
+        }
+        
+        cancion.setId(idCancion);
+        
+        // Obtener el artista por ID y asociarlo a la canción
+        Artista artista = servicioArtistas.obtenerArtistaPorId(artistaId);
+        cancion.setArtista(artista); 
 
-  @GetMapping("/canciones/formulario/editar/{idCancion}")
-  public String formularioEditarCancion(@ModelAttribute("cancion")Cancion cancion, 
-		                                                 @PathVariable("idCancion")Long idCancion,
-		                                                 Model modelo  ) {
-	  
-	
-	  
-Cancion cancionActual = this.servicioCanciones.obtenerCancionPorId(idCancion);  
-modelo.addAttribute("cancion", cancionActual);
-
-
-return "editarCancion.jsp";
-  }
+        this.servicioCanciones.actualizarCancion(cancion);
+        return "redirect:/canciones";  
+    } 
   
-  
-  @PutMapping("/canciones/procesa/editar/{idCancion}")
-  public String procesarEditarCancion(@Valid @ModelAttribute("cancion") Cancion cancion,
-		  								BindingResult validaciones,
-		  								@PathVariable("idCancion") long idCancion ) {
-	  
-	  if (validaciones.hasErrors()) {
-		  return "editarCancion.jsp"; }
-	 cancion.setId(idCancion);
-	 this.servicioCanciones.actualizarCancion(cancion);
-	  return "redirect:/canciones";  
-  }
-  
-  @DeleteMapping("/canciones/eliminar/{idCancion}")
-  public String procesarEliminarCancion(@PathVariable("idCancion")Long idCancion ) {
-	  this.servicioCanciones.eliminarCancion(idCancion);
-	  
-	  
-	 return "redirect:/canciones";
-  }
-  
+    // Eliminar Canción
+    @DeleteMapping("/canciones/eliminar/{idCancion}")
+    public String procesarEliminarCancion(@PathVariable("idCancion") Long idCancion) {
+        this.servicioCanciones.eliminarCancion(idCancion);
+        return "redirect:/canciones";
+    }
+    
+    
+    @DeleteMapping("/eliminar/{artistaId}")
+    public String procesarEliminarArtista(@PathVariable("artistaId") Long artistaId) {
+        this.servicioArtistas.eliminarArtista(artistaId);
+        return "redirect:/artistas"; // Asegúrate de redirigir a la lista de artistas
+    }
+    
 }
-  
-  
 
-  
-  
-  
+
   
 

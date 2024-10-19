@@ -23,7 +23,7 @@
             </div>
 
             <div>
-                <form:label path="artistaId">Seleccionar Artista</form:label> <!-- Cambiar for a path -->
+                <form:label path="artistaId">Seleccionar Artista</form:label> 
                 <form:select path="artistaId" class="form-select">
                     <form:options items="${artistas}" itemValue="id" itemLabel="nombre" />
                 </form:select>

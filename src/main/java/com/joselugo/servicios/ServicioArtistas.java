@@ -34,7 +34,13 @@ public class ServicioArtistas {
 		   return this.repositorioArtistas.save(nuevoArtista);	   
 	   
 	   }
+	   public void actualizarArtista(Artista artista) {
+		   repositorioArtistas.save(artista); // Guarda los cambios en el artista
+		}
 	   
 	   
-	   
-}
+	   public void eliminarArtista(Long idLong) {
+		   this.repositorioArtistas.deleteById(idLong);
+		   
+	   }
+	   } 
